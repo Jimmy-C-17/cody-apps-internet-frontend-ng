@@ -1,0 +1,50 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="card">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Gestión de Categorías</h2>
+    <p-button label="Nueva Categoría" icon="pi pi-plus" severity="success" (onClick)="openNew()"></p-button>
+  </div>
+  
+  <p-table [value]="categoryService.categories()" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cat>
+      <tr>
+        <td>{{ cat.id }}</td>
+        <td>{{ cat.title }}</td>
+        <td>{{ cat.description }}</td>
+        <td>
+          <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" (onClick)="editCategory(cat)"></p-button>
+          <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="deleteCategory(cat)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Modal de Creación/Edición -->
+<p-dialog [(visible)]="categoryDialog" [style]="{ width: '450px' }" header="Detalles de Categoría" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="field mb-4 mt-2">
+      <label for="title" class="block font-medium mb-1">Título</label>
+      <input type="text" pInputText id="title" [(ngModel)]="category.title" required autofocus class="w-full" />
+      <small class="p-error block mt-1" *ngIf="submitted && !category.title">El título es requerido.</small>
+    </div>
+    <div class="field">
+      <label for="description" class="block font-medium mb-1">Descripción</label>
+      <input type="text" pInputText id="description" [(ngModel)]="category.description" class="w-full" />
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+    <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveCategory()"></p-button>
+  </ng-template>
+</p-dialog>

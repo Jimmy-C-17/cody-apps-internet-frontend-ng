@@ -7,7 +7,7 @@ import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.compon
 import { SignInComponent } from './features/auth/pages/sign-in/sign-in.component';
 import { SignUpComponent } from './features/auth/pages/sign-up/sign-up.component';
 
-import { CategoriesComponent } from './features/categories/components/category-list/categories.component';
+import { CategoryListComponent } from './features/categories/components/category-list/category-list.component';
 import { ProductsComponent } from './features/products/components/product-list/products.component';
 import { CartComponent } from './features/cart/components/cart-view/cart.component';
 
@@ -30,7 +30,7 @@ export const routes: Routes = [
       },
       {
         path:'categories',
-        component:CategoriesComponent,
+        component:CategoryListComponent,
         title:'Categorías | MiPanel Pro'
       },
       {
