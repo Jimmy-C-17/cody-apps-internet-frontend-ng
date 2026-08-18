@@ -1,0 +1,108 @@
+<!-- Gestión de Tareas -->
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="px-4 py-4 md:px-6 md:py-6">
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 shadow-theme-sm">
+    <!-- Toolbar -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90">Gestión de Tareas</h2>
+      <div class="flex gap-2">
+        <p-button label="IA TAREA" icon="pi pi-sparkles" (onClick)="openAiDialog()" severity="help" styleClass="p-button-outlined"></p-button>
+        <p-button label="NUEVA TAREA" icon="pi pi-plus" (onClick)="openNew()" styleClass="p-button-primary"></p-button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <p-table
+      #dt
+      [value]="tasks()"
+      [rows]="10"
+      [paginator]="true"
+      [globalFilterFields]="['title', 'description']"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [rowHover]="true"
+      dataKey="id"
+      class="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 4rem">Estado</th>
+          <th pSortableColumn="title" style="min-width:15rem">Título <p-sortIcon field="title"></p-sortIcon></th>
+          <th pSortableColumn="description">Descripción <p-sortIcon field="description"></p-sortIcon></th>
+          <th style="width: 8rem; text-align: center">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-t>
+        <tr>
+          <td class="text-center">
+            <p-checkbox [(ngModel)]="t.completed" [binary]="true" (onChange)="toggleStatus(t)"></p-checkbox>
+          </td>
+          <td>
+            <span [class.line-through]="t.completed" [class.text-gray-400]="t.completed" class="font-medium text-gray-800 dark:text-gray-200">
+              {{ t.title }}
+            </span>
+          </td>
+          <td>
+            <span [class.text-gray-400]="t.completed" class="text-gray-600 dark:text-gray-400">
+              {{ t.description }}
+            </span>
+          </td>
+          <td class="text-center">
+            <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success" (onClick)="editTask(t)"></p-button>
+            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (onClick)="deleteTask(t)"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center p-4">No se encontraron tareas.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Edit Dialog -->
+<p-dialog [(visible)]="taskDialog" [style]="{ width: '450px' }" header="Detalle de Tarea" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    @if(task) {
+      <div class="flex flex-col gap-4 mt-2">
+        <div class="field">
+          <label for="title" class="font-medium">Título</label>
+          <input type="text" pInputText id="title" [(ngModel)]="task.title" required autofocus 
+                 class="w-full mt-1" [ngClass]="{'ng-invalid ng-dirty': submitted && !task.title}"/>
+          @if(submitted && !task.title) {
+            <small class="p-error block mt-1">El título es requerido.</small>
+          }
+        </div>
+        <div class="field">
+          <label for="description" class="font-medium">Descripción</label>
+          <textarea id="description" pTextarea [(ngModel)]="task.description" required rows="3" cols="20" class="w-full mt-1"></textarea>
+        </div>
+      </div>
+    }
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="hideDialog()"></p-button>
+    <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveTask()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- AI Dialog -->
+<p-dialog [(visible)]="aiDialog" [style]="{ width: '450px' }" header="Generar Tarea con IA" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="flex flex-col gap-4 mt-2">
+      <div class="field">
+        <label for="prompt" class="font-medium">¿De qué trata la tarea?</label>
+        <textarea id="prompt" pTextarea [(ngModel)]="aiPrompt" required rows="4" class="w-full mt-1" placeholder="Ej: Crea una tarea para revisar el backend..."></textarea>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="aiDialog = false"></p-button>
+    <p-button label="Generar" icon="pi pi-sparkles" [text]="true" severity="help" (onClick)="generateAiTask()"></p-button>
+  </ng-template>
+</p-dialog>

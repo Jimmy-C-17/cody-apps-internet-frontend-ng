@@ -1,0 +1,13 @@
+/* custom styles for tasks component if any */
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+:host ::ng-deep .p-button.p-button-icon-only {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+:host ::ng-deep .line-through {
+    text-decoration: line-through;
+}
