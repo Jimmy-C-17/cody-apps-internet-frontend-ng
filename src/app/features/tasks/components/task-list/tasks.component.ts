@@ -54,7 +54,7 @@ export class TasksComponent implements OnInit {
   }
 
   openNew() {
-    this.task = { title: '', description: '', completed: false };
+    this.task = { id: 0, title: '', description: '', status: 'pending', created_at: '' };
     this.submitted = false;
     this.taskDialog = true;
   }
